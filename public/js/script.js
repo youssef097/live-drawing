@@ -11,6 +11,8 @@ let WIDTH = 1
 var socket = io();
 var drawing = false;
 
+let currentPath =  null;
+
 for (let i = 0; i < 3; i++) {
     cursors[i] = new Image()
     cursors[i].src = "img/cursors/" + i + ".png"
@@ -162,13 +164,14 @@ color.addEventListener("change", (e) => {
 
 
 socket.on("stop_drawing", () => {
-    ctx.closePath()
+    // currentPath.closePath()
     console.log("Close Path");
 })
 
 
 socket.on("start_drawing", () => {
-    ctx.beginPath()
+    currentPath = new Path2D();
+    // currentPath.beginPath()
     console.log("Begin path");
 })
 
@@ -177,13 +180,13 @@ socket.on("clear", () => {
 })
 
 socket.on("draw_line", (coords) => {   
-    ctx.lineTo(coords.x1, coords.y1)
-    ctx.moveTo(coords.x1, coords.y1)
+    currentPath.lineTo(coords.x1, coords.y1)
+    currentPath.moveTo(coords.x1, coords.y1)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.strokeStyle = coords.color;
     ctx.lineWidth = coords.width;
-    ctx.stroke()
+    ctx.stroke(currentPath)
 })
 
 
