@@ -129,14 +129,14 @@ function renderCursors(painters) {
         
 
       
-        if (e.id == socket.id) {
-            crs.style.left = mouse.x + c.offsetLeft - 8 + "px"
-            crs.style.top = mouse.y + c.offsetTop - 8 + "px"
-        } else {
+        if (e.id != socket.id) {
+            // crs.style.left = mouse.x + c.offsetLeft - 8 + "px"
+            // crs.style.top = mouse.y + c.offsetTop - 8 + "px"
             if(e.y != null &&  e.x != null){
                 crs.style.left = e.x + c.offsetLeft - 8 + "px"
                 crs.style.top = e.y + c.offsetTop - 8 + "px"                
             }
+        } else {
         }
     })
 }
