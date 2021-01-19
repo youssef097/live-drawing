@@ -35,7 +35,11 @@
             /* position: relative; */
             
         }
-        
+        .width{
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
         #alert-box{            
             padding:1em;
             position: fixed;
@@ -57,7 +61,8 @@
 </head>
 
 <body>
-    <input type="text" id = "changename" >
+    <h3>Nombre <input type="text" value="no_name" id = "changename" ></h3>
+    
     <h1></h1>
     <div id="alert-box">
 
@@ -69,32 +74,20 @@
         </canvas>
     </div>
     
-    <pre id="coords">
-
-    </pre>
+   
     <script src="/socket.io/socket.io.js">
     </script>
-    <input type="color" id="color-select" >
-    <div>
-        <input type="range" vlaue="1" id="width" min="1" max="20">
+    <div class="width">
+        <input type="color" id="color-select" >
+        <input type="range" value="1" id="width" min="1" max="20">
         <div id="circle"></div>
-    </div>
-    <div>
         <button id="clear">
             Clear
         </button>
     </div>
-    <pre style="width: 150px;">
-
-    </pre>
-    
-    <form action="/close" method="post" id="close">
-        <button>
-            close
-        </button>
-    </form>
+     
+  
     <script src="js/script.js"></script>
-    <img src="img/cursors/0.png">
 </body>
 
 </html>

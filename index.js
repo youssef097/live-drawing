@@ -25,10 +25,10 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("draw_line", coords)
     })
     socket.on("stop_drawing", () => {
-        io.emit("stop_drawing")
+        socket.broadcast.emit("stop_drawing")
     })
     socket.on("start_drawing", () => {
-        io.emit("start_drawing")
+        socket.broadcast.emit("start_drawing")
     })
     socket.on("clear", () => {
         io.emit("clear")
@@ -40,6 +40,7 @@ io.on("connection", (socket) => {
               e.name = name
             }            
         })
+        socket.broadcast.emit("set_name",({id,name}))
         // console.log(painters);
     })
     socket.on("cursor_pos", ({mouse}) => {

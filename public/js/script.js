@@ -3,7 +3,8 @@ const paths = []
 const pathNumber = 0;
 const cursors = []
 const painters = [];
-let COLOR = ""
+let COLOR = "black"
+let WIDTH = 1
 
 
 
@@ -22,18 +23,15 @@ let c = document.getElementById("canvas")
 let ctx = c.getContext("2d")
 let color = document.getElementById("color-select")
 
-ctx.imageSmoothingEnabled = true;
+// ctx.imageSmoothingEnabled = true;
 
-ctx.lineWidth = 2;
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
 
 c.width = 500
 c.height = 500
 
-color.addEventListener("change", (e) => {
-    COLOR = color.value
-})
+
 const mouse = {
     x: null,
     y: null
@@ -44,6 +42,7 @@ const cursor = Math.floor(Math.random() * cursors.length)
 
 document.addEventListener("mousedown", (e) => {
     socket.emit("start_drawing");
+    ctx.beginPath()
     drawing = true;
 })
 
@@ -54,6 +53,7 @@ c.addEventListener("touchstart", (e) => {
     mouse.x = parseInt(e.changedTouches[0].clientX) - c.offsetLeft
     mouse.y = parseInt(e.changedTouches[0].clientY) - c.offsetTop
     socket.emit("start_drawing");
+    ctx.beginPath()
     drawing = true;
 })
 
@@ -61,6 +61,7 @@ c.addEventListener("touchstart", (e) => {
 document.addEventListener("mouseup", (e) => {
     drawing = false;
     socket.emit("stop_drawing")
+    ctx.closePath()
 })
 
 
@@ -68,6 +69,7 @@ c.addEventListener("touchend", (e) => {
     e.preventDefault()
     console.log("touchend");
     drawing = false;
+    ctx.closePath()
     socket.emit("stop_drawing")
 })
 
@@ -97,7 +99,6 @@ c.addEventListener("touchmove", (e) => {
 })
 
 document.getElementById("clear").addEventListener("click", () => {
-
     socket.emit("clear")
 })
 
@@ -106,6 +107,9 @@ document.getElementById("changename").addEventListener("change",e=>{
 })
 var userid = null;
 
+socket.on("set_name",({id,name})=>{
+    document.getElementById(id).lastChild.textContent = name
+})
 
 let current = document.querySelector("#current")
 let coords = document.querySelector("#coords")
@@ -114,7 +118,7 @@ let coords = document.querySelector("#coords")
 
 function renderCursors(painters) {
     painters.forEach(e => {
-        if(!document.getElementById(e.id)){
+        if(!document.getElementById(e.id) && e.id != socket.id){
             console.log("Creating cursor for "+ e.id);
             let newImg = cursors[e.cursor].cloneNode()
             let newNode = document.createElement("div")            
@@ -122,7 +126,10 @@ function renderCursors(painters) {
             newNode.style.zIndex = "9999"
             newNode.style.position = "absolute"
             newNode.appendChild(newImg)
-            newNode.appendChild(document.createTextNode(e.name));            
+            let span = document.createElement("span")
+            span.textContent = e.name
+            span.name = "user_name"
+            newNode.appendChild(span);            
             document.getElementById("container").appendChild(newNode)
         }
         let crs = document.getElementById(e.id)
@@ -142,13 +149,16 @@ function renderCursors(painters) {
 }
 
 document.getElementById("width").addEventListener("change", (e) => {
-    ctx.lineWidth = e.target.value
+    WIDTH = e.target.value
     document.getElementById("circle").style.width = e.target.value + "px"
     document.getElementById("circle").style.height = e.target.value + "px"
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"    
+    // ctx.lineCap = "round"
+    // ctx.lineJoin = "round"    
 })
-
+color.addEventListener("change", (e) => {
+    COLOR = color.value
+    document.getElementById("circle").style.backgroundColor = COLOR;    
+})
 
 
 socket.on("stop_drawing", () => {
@@ -180,8 +190,7 @@ socket.on("draw_line", (coords) => {
 
 
 
-socket.on("update_cursors", (painters) => {
-    
+socket.on("update_cursors", (painters) => {    
     // document.querySelector("pre").innerText = JSON.stringify(painters)
     renderCursors(painters)    
 })
@@ -190,16 +199,18 @@ socket.on("update_cursors", (painters) => {
 function mainLoop() {        
     if (drawing && mouse.x && mouse.y) {
         let [x1, y1] = [mouse.x, mouse.y]
+        
         ctx.lineTo(x1, y1)
         ctx.moveTo(x1, y1)
         ctx.lineCap = "round"
         ctx.lineJoin = "round"
         ctx.strokeStyle = COLOR;
-        ctx.lineWidth = ctx.lineWidth; 
+        ctx.lineWidth = WIDTH; 
+        
         ctx.stroke()
 
 
-        socket.emit("draw_line", { x1, y1, color: COLOR, width: ctx.lineWidth })
+        socket.emit("draw_line", { x1, y1, color: COLOR, width: WIDTH })
         
     }
     socket.emit("cursor_pos", { mouse })
