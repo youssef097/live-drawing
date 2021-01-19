@@ -166,7 +166,7 @@ socket.on("clear", () => {
     ctx.clearRect(0, 0, c.width, c.height)
 })
 
-socket.on("draw_line", (coords) => {
+socket.on("draw_line", (coords) => {   
     ctx.lineTo(coords.x1, coords.y1)
     ctx.moveTo(coords.x1, coords.y1)
     ctx.lineCap = "round"
@@ -190,7 +190,17 @@ socket.on("update_cursors", (painters) => {
 function mainLoop() {        
     if (drawing && mouse.x && mouse.y) {
         let [x1, y1] = [mouse.x, mouse.y]
+        ctx.lineTo(x1, y1)
+        ctx.moveTo(x1, y1)
+        ctx.stroke()
+        // ctx.lineCap = "round"
+        // ctx.lineJoin = "round"
+
+        // ctx.strokeStyle = coords.color;
+        // ctx.lineWidth = coords.width;
+
         socket.emit("draw_line", { x1, y1, color: COLOR, width: ctx.lineWidth })
+        
     }
     socket.emit("cursor_pos", { mouse })
     requestAnimationFrame(mainLoop)

@@ -22,7 +22,7 @@ io.on("connection", (socket) => {
     
     io.emit("new_painter", newPainter)
     socket.on("draw_line", (coords) => {
-        io.emit("draw_line", coords)
+        socket.broadcast.emit("draw_line", coords)
     })
     socket.on("stop_drawing", () => {
         io.emit("stop_drawing")
