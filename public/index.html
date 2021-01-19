@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+
+        }
+
+        canvas {
+            border: 1px solid;
+            z-index: 232;
+        }
+        .alert{
+            background: #5af380bb;
+            color: white;            
+            padding: .2em;
+            
+        }
+        img{
+            cursor: none;
+        }
+        
+        #container {
+            cursor: none;
+            /* background: slategrey; */
+            /* position: relative; */
+            
+        }
+        
+        #alert-box{            
+            padding:1em;
+            position: fixed;
+            right: .2em;
+            top: 1em;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+        }
+        #circle{
+            border-radius: 50%;
+            background: #000;
+            width: 2px;
+            height: 2px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <input type="text" id = "changename" >
+    <h1></h1>
+    <div id="alert-box">
+
+    </div>
+    <p id="current"> Current users</p>
+    <div id="container">
+        <canvas id="canvas">
+    
+        </canvas>
+    </div>
+    
+    <pre id="coords">
+
+    </pre>
+    <script src="/socket.io/socket.io.js">
+    </script>
+    <input type="color" id="color-select" >
+    <div>
+        <input type="range" vlaue="1" id="width" min="1" max="20">
+        <div id="circle"></div>
+    </div>
+    <div>
+        <button id="clear">
+            Clear
+        </button>
+    </div>
+    <pre style="width: 150px;">
+
+    </pre>
+    
+    <form action="/close" method="post" id="close">
+        <button>
+            close
+        </button>
+    </form>
+    <script src="js/script.js"></script>
+    <img src="img/cursors/0.png">
+</body>
+
+</html>
