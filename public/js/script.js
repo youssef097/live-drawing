@@ -194,8 +194,8 @@ function mainLoop() {
         ctx.moveTo(x1, y1)
         ctx.lineCap = "round"
         ctx.lineJoin = "round"
-        ctx.strokeStyle = coords.color;
-        ctx.lineWidth = coords.width; 
+        ctx.strokeStyle = COLOR;
+        ctx.lineWidth = ctx.lineWidth; 
         ctx.stroke()
 
 
