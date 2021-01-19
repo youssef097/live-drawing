@@ -130,12 +130,12 @@ function renderCursors(painters) {
 
       
         if (e.id != socket.id) {
-            // crs.style.left = mouse.x + c.offsetLeft - 8 + "px"
-            // crs.style.top = mouse.y + c.offsetTop - 8 + "px"
             if(e.y != null &&  e.x != null){
                 crs.style.left = e.x + c.offsetLeft - 8 + "px"
                 crs.style.top = e.y + c.offsetTop - 8 + "px"                
             }
+            // crs.style.left = mouse.x + c.offsetLeft - 8 + "px"
+            // crs.style.top = mouse.y + c.offsetTop - 8 + "px"
         } else {
         }
     })
@@ -192,12 +192,12 @@ function mainLoop() {
         let [x1, y1] = [mouse.x, mouse.y]
         ctx.lineTo(x1, y1)
         ctx.moveTo(x1, y1)
+        ctx.lineCap = "round"
+        ctx.lineJoin = "round"
+        ctx.strokeStyle = coords.color;
+        ctx.lineWidth = coords.width; 
         ctx.stroke()
-        // ctx.lineCap = "round"
-        // ctx.lineJoin = "round"
 
-        // ctx.strokeStyle = coords.color;
-        // ctx.lineWidth = coords.width;
 
         socket.emit("draw_line", { x1, y1, color: COLOR, width: ctx.lineWidth })
         
