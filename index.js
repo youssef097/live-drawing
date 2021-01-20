@@ -2,46 +2,58 @@
 const path = require("path")
 
 const express = require("express");
+
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http)
 
 var painters = [];
-
-
+var imageData = null;
+var currentName = "no_name"
 app.use(express.static(path.join(__dirname, "/public")))
 
 app.get("*", (req, res) => {
     res.redirect("/index.html")
 })
 
+
 io.on("connection", (socket) => {
     let newPainter = new Painter(socket.id);
     painters.push(newPainter)
 
-    
+    io.to(painters[0].id).emit("request_img")
+
+    socket.on("receive_imgData",async (data)=>{
+         imageData = await data;
+    })
+    socket.emit("send_data",(imageData))
+
     io.emit("new_painter", newPainter)
     socket.on("draw_line", (coords) => {
-        socket.broadcast.emit("draw_line", coords)
+        socket.broadcast.emit("draw_line", {coords,id:socket.id})
     })
     socket.on("stop_drawing", () => {
         socket.broadcast.emit("stop_drawing")
     })
     socket.on("start_drawing", () => {
-        socket.broadcast.emit("start_drawing")
+        socket.broadcast.emit("start_drawing",(socket.id))
     })
     socket.on("clear", () => {
         io.emit("clear")
     })
-    socket.on("set_name",({id,name})=>{
-        console.log(id,name);
+
+    socket.on("chat-msg",(msg)=>{
+        socket.broadcast.emit("chat-msg",{msg,name:currentName})
+    })
+    socket.on("set_name",({id,name})=>{        
         painters.forEach(e => {
-            if (id == socket.id) {
+            if (id == e.id) {
+              currentName = name
               e.name = name
+              socket.broadcast.emit("set_name",({id,name}))
             }            
         })
-        socket.broadcast.emit("set_name",({id,name}))
-        // console.log(painters);
+        console.log(painters);
     })
     socket.on("cursor_pos", ({mouse}) => {
         

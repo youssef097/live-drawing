@@ -6,42 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live drawing</title>
     <style>
+        body {
+            background: #333333;
+        }
+
         * {
-            -webkit-user-select: none;
+            /* -webkit-user-select: none;
             -khtml-user-select: none;
             -moz-user-select: none;
-            -o-user-select: none;
-            user-select: none;
+            -o-user-select: none; */
+            box-sizing: border-box;
+            /* user-select: none; */
+
+        }
+
+        input[type="color"] {
+            /* outline: none; */
+            /* background: transparent; */
+            /* border: none; */
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+        }
+
+        input[type="range"] {
+            appearance: none;
+            outline: none;
+            height: 2px;
+            background-color: #333;
+            color: greenyellow;
 
         }
 
         canvas {
+            /* width: 100%; */
+            /* cursor: ,auto; */
+            background: white;
             border: 1px solid;
             z-index: 232;
         }
-        .alert{
+
+        .alert {
             background: #5af380bb;
-            color: white;            
+            color: white;
             padding: .2em;
-            
+
         }
-        img{
+
+        #container img {
             cursor: none;
         }
-        
+
+        .user_name {
+            color: black;
+            text-shadow: rgb(255, 255, 255) 2px 0px 0px, rgb(255, 255, 255) 1.75517px 0.958851px 0px, rgb(255, 255, 255) 1.0806px 1.68294px 0px, rgb(255, 255, 255) 0.141474px 1.99499px 0px, rgb(255, 255, 255) -0.832294px 1.81859px 0px, rgb(255, 255, 255) -1.60229px 1.19694px 0px, rgb(255, 255, 255) -1.97998px 0.28224px 0px, rgb(255, 255, 255) -1.87291px -0.701566px 0px, rgb(255, 255, 255) -1.30729px -1.5136px 0px, rgb(255, 255, 255) -0.421592px -1.95506px 0px, rgb(255, 255, 255) 0.567324px -1.91785px 0px, rgb(255, 255, 255) 1.41734px -1.41108px 0px, rgb(255, 255, 255) 1.92034px -0.558831px 0px;
+        }
+
         #container {
+
+            display: flex;
+            justify-content: space-evenly;
+            /* text-align: center; */
+            /* background: green; */
             /* cursor: none; */
             /* background: slategrey; */
             /* position: relative; */
-            
+
         }
-        .width{
+
+        .width {
+            padding: 1em;
+            background: steelblue;
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 1em;
         }
-        #alert-box{            
-            padding:1em;
+
+        #alert-box {
+            padding: 1em;
             position: fixed;
             right: .2em;
             top: 1em;
@@ -50,43 +105,72 @@
             gap: 4px;
 
         }
-        #circle{
+
+        #circle {
             border-radius: 50%;
             background: #000;
             width: 2px;
             height: 2px;
         }
 
+        #chat-list {
+            height: 400px;
+            background: white;
+        }
+
+        #chat {
+            padding: 1em;
+            background: steelblue;
+            /* background: red; */
+        }
     </style>
 </head>
 
 <body>
-    <h3>Nombre <input type="text" value="no_name" id = "changename" ></h3>
-    
-    <h1></h1>
+
     <div id="alert-box">
 
     </div>
-    <p id="current"> Current users</p>
+    <h3>Nombre
+        <input type="text" value="no_name" id="changename">
+    </h3>
     <div id="container">
-        <canvas id="canvas">
-    
-        </canvas>
+        <div id="chat">
+            <div id="userList">                
+            </div>
+            <div id="chat-list">
+            </div>
+            <!-- <div id="send-msg"> -->
+                <form id="send-msg" action="#">
+                    <input id="msg-input" type="text"> <button>Send</button>
+                </form>
+            <!-- </div> -->
+        </div>
+        <div class="">
+            <div>
+            </div>
+            <canvas id="canvas">
+            </canvas>
+        </div>
+
+        <div class="width">
+            <input type="color" id="color-select">
+            <input type="range" value="1" id="width" min="1" max="20">
+            <div id="circle"></div>
+            <!-- <input type="file" > -->
+            <button id="clear">
+                Clear
+            </button>
+        </div>
     </div>
-    
-   
+
+
     <script src="/socket.io/socket.io.js">
     </script>
-    <div class="width">
-        <input type="color" id="color-select" >
-        <input type="range" value="1" id="width" min="1" max="20">
-        <div id="circle"></div>
-        <button id="clear">
-            Clear
-        </button>
-    </div>
-     
-  
+
+
+    <img draggable="true" src="img/cursors/2.png" alt="">
+
     <script src="js/script.js"></script>
 </body>
 

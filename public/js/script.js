@@ -1,5 +1,5 @@
 
-const paths = []
+const paths = {}
 const pathNumber = 0;
 const cursors = []
 const painters = [];
@@ -9,6 +9,7 @@ let WIDTH = 1
 
 
 var socket = io();
+
 var drawing = false;
 
 let currentPath =  null;
@@ -24,14 +25,16 @@ for (let i = 0; i < 3; i++) {
 let c = document.getElementById("canvas")
 let ctx = c.getContext("2d")
 let color = document.getElementById("color-select")
+let container = document.getElementById("container")
+let userList = document.getElementById("userList")
 
 // ctx.imageSmoothingEnabled = true;
 
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
 
-c.width = 500
-c.height = 500
+c.width = 1280
+c.height = 720
 
 
 const mouse = {
@@ -42,13 +45,11 @@ const mouse = {
 
 const cursor = Math.floor(Math.random() * cursors.length)
 
-document.addEventListener("mousedown", (e) => {
+container.addEventListener("mousedown", (e) => {
     socket.emit("start_drawing");
     ctx.beginPath()
     drawing = true;
 })
-
-
 c.addEventListener("touchstart", (e) => {
     e.preventDefault()
     console.log(e);
@@ -58,15 +59,11 @@ c.addEventListener("touchstart", (e) => {
     ctx.beginPath()
     drawing = true;
 })
-
-
-document.addEventListener("mouseup", (e) => {
+container.addEventListener("mouseup", (e) => {
     drawing = false;
     socket.emit("stop_drawing")
     ctx.closePath()
 })
-
-
 c.addEventListener("touchend", (e) => {
     e.preventDefault()
     console.log("touchend");
@@ -74,9 +71,6 @@ c.addEventListener("touchend", (e) => {
     ctx.closePath()
     socket.emit("stop_drawing")
 })
-
-
-
 c.addEventListener("mousemove", (e) => {
     mouse.x = e.offsetX;
     mouse.y = e.offsetY;
@@ -111,11 +105,24 @@ var userid = null;
 
 socket.on("set_name",({id,name})=>{
     document.getElementById(id).lastChild.textContent = name
+    document.getElementById("list-"+id).childNodes[1].textContent = name
 })
 
 let current = document.querySelector("#current")
 let coords = document.querySelector("#coords")
 
+document.getElementById("send-msg").addEventListener("submit",(e)=>{
+    e.preventDefault();
+    let msg = document.getElementById("msg-input")
+    // console.log("hello");
+    socket.emit("chat-msg",msg.value)            
+    msg.value = ""
+})
+socket.on("chat-msg",({msg,name})=>{
+    document.getElementById("chat-list").innerHTML+=`<div class="chat-message"><b>${name}:</b> ${msg} </div>`
+    
+
+})
 
 
 function renderCursors(painters) {
@@ -130,10 +137,16 @@ function renderCursors(painters) {
             newNode.appendChild(newImg)
             let span = document.createElement("span")
             span.textContent = e.name
-            span.name = "user_name"
+            span.className = "user_name"
             newNode.appendChild(span);            
             document.getElementById("container").appendChild(newNode)
+            if(!document.getElementById(`list-${e.id}`)){
+                userList.innerHTML += `<span id="list-${e.id}"> <span>${e.name} </span> <span id="circle-${e.id}"></span></span>`
+            }
         }
+
+        
+
         let crs = document.getElementById(e.id)
         
 
@@ -169,24 +182,29 @@ socket.on("stop_drawing", () => {
 })
 
 
-socket.on("start_drawing", () => {
-    currentPath = new Path2D();
+socket.on("start_drawing", (id) => {
+    // if(currentPath)
+    paths[id] = new Path2D()
+    // currentPath = new Path2D();
+    
+    // console.log(currentPath);
     // currentPath.beginPath()
-    console.log("Begin path");
+    console.log(id + " began path");
 })
 
 socket.on("clear", () => {
     ctx.clearRect(0, 0, c.width, c.height)
 })
 
-socket.on("draw_line", (coords) => {   
-    currentPath.lineTo(coords.x1, coords.y1)
-    currentPath.moveTo(coords.x1, coords.y1)
+socket.on("draw_line", ({coords,id}) => {   
+  
+    paths[id].lineTo(coords.x1, coords.y1)
+    paths[id].moveTo(coords.x1, coords.y1)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.strokeStyle = coords.color;
     ctx.lineWidth = coords.width;
-    ctx.stroke(currentPath)
+    ctx.stroke(paths[id])
 })
 
 
@@ -224,10 +242,20 @@ mainLoop()
 
 
 socket.on("usr_leave", (id) => {
-    showAlert("User " + id + " has disconnected", "red")   
+    showAlert("User " + id + " has disconnected", "red")  
+    userList.removeChild(document.getElementById("list-"+id)) 
     document.getElementById("container").removeChild(document.getElementById(id)) 
+    delete paths[id]
 })
-
+document.addEventListener("drop",(e)=>{
+    e.preventDefault()
+    console.log(e);
+})  
+socket.on("request_img",()=>{
+    let imageData = c.toDataURL()
+    socket.emit("receive_imgData",(imageData))
+    console.log("sending my data");
+})
 
 const alertBox = document.getElementById("alert-box")
 function showAlert(msg, color) {
@@ -244,7 +272,21 @@ function showAlert(msg, color) {
 
 }
 
+socket.on("send_data",(data)=>{
+    let img = new Image();
+    img.src = data;
+    img.onload = ()=>{
+        console.log("Loading...");
+        ctx.drawImage(img,0,0)
+    }
 
-socket.on("new_painter", (painter) => {        
+})
+socket.on("new_painter", (painter) => {               
     showAlert("User " + painter.name + " has connected")
 })
+
+window.onbeforeunload = ()=>{
+    let imageData = c.toDataURL()
+    socket.emit("receive_imgData",(imageData))
+
+}
