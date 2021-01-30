@@ -65,7 +65,9 @@ io.on("connection", (socket) => {
         })
         io.emit("update_cursors", painters)
     })
-
+    socket.on("floodFill", (data) => {              
+        io.emit("floodFill", data)
+    })
 
     socket.on("disconnect", () => {
         console.log(socket.id + " disconected ");
