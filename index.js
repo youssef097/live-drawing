@@ -1,23 +1,51 @@
 
+const Room = require("./Room.js")
 const path = require("path")
-
 const express = require("express");
-
+const uuid = require("uuid")
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http)
 
+
 var painters = [];
 var imageData = null;
-var currentName = "no_name"
-app.use(express.static(path.join(__dirname, "/public")))
+var currentName = "painter_"+Math.floor(Math.random()*1000);
 
-app.get("*", (req, res) => {
-    res.redirect("/index.html")
+const ROOMS = []
+
+app.set("view engine", "ejs")
+
+app.use(express.static(path.join(__dirname, "/public")))
+app.use(express.urlencoded({extended:false}))
+
+app.get("/", (req, res) => {
+    res.render("index",{rooms:ROOMS})    
 })
 
+app.post("/create-room", (req, res) => {
+    let newRoom = new Room(uuid.v1(),req.body.room_name)    
+    ROOMS.push(newRoom)
+    console.log('====================================');
+    console.log("New Room Created", newRoom);
+    console.log('====================================');
+    res.redirect("/")    
+})
+
+app.get("/room/:id", (req, res) => {
+    console.log(req.params);
+    res.render("room",{rooms:ROOMS})    
+})
+
+app.post("/join-room",(req,res)=>{
+    let newRoom = new Room(uuid.v1(),req.body.room_name)    
+    ROOMS.push(newRoom)
+    res.redirect("/room/"+newRoom.id)
+})
 
 io.on("connection", (socket) => {
+
+
     let newPainter = new Painter(socket.id);
     painters.push(newPainter)
 
@@ -35,8 +63,8 @@ io.on("connection", (socket) => {
     socket.on("stop_drawing", () => {
         socket.broadcast.emit("stop_drawing")
     })
-    socket.on("start_drawing", () => {
-        socket.broadcast.emit("start_drawing",(socket.id))
+    socket.on("start_drawing", ({color,width}) => {        
+        socket.broadcast.emit("start_drawing",({id:socket.id,color,width}))
     })
     socket.on("clear", () => {
         io.emit("clear")
@@ -44,6 +72,9 @@ io.on("connection", (socket) => {
 
     socket.on("chat-msg",(msg)=>{
         socket.broadcast.emit("chat-msg",{msg,name:currentName})
+    })
+    socket.on("undo",(id)=>{
+        socket.broadcast.emit("undo",id)
     })
     socket.on("set_name",({id,name})=>{        
         painters.forEach(e => {
@@ -82,7 +113,7 @@ io.on("connection", (socket) => {
 class Painter {
     constructor(id) {
         this.id = id;
-        this.name = "no_name";
+        this.name = currentName;
         this.x = 23;
         this.y = 23;
         this.cursor = Math.floor(Math.random() * 3)

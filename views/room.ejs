@@ -5,18 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live drawing</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
 </head>
 
 <body>
 
-    <div id="alert-box">
+    <div id="alert-box"></div>
 
-    </div>
-    <h3>Nombre
-        <input type="text" value="no_name" id="changename">
-    </h3>
     <div id="container">
         <div id="chat">
             <div id="userList">
@@ -33,10 +29,9 @@
         <div id="canvas-container">
             <canvas id="canvas">
             </canvas>
-
         </div>
 
-        <div class="width">
+        <div  id="tools"class="width">
             <input type="color" id="color-select">
             <input type="range" value="1" id="width" min="1" max="20">
             <div id="circle"></div>            
@@ -46,14 +41,25 @@
             <button id="clear">
                 <i class="far fa-file"></i> Clear
             </button>
+            <button id="floodfill">
+                <i class="fas fa-fill-drip"></i>Fill
+            </button>
+            <div>
+                <button id="undo">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button id="redo">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
         </div>
     </div>
 
 
     <script src="/socket.io/socket.io.js">
     </script>
-
-    <script src="js/script.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>

@@ -1,12 +1,16 @@
-export default class Room{
+
+
+const Room =  class Room{
     constructor(id,name){
         this.id = id;
-        this.name = name;     
+        this.name = name;
+        this.actions = []     
         this.canvasData = null;   
         this.currentUsers = [];
-        this.messages = [];
+        this.messages = [];        
     }
     connect(){
         
     }
 }
+module.exports = Room;

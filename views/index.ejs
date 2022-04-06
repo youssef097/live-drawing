@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Drawing.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Rooms</h1>
+    <form method="POST" action="/create-room">
+        <h2>Create room</h2>
+        Nombre sala <input name="room_name" type="text">
+        Max players <input name="max" type="number">
+        <input type="submit">
+    </form>
+
+    <h2>Join Room</h2>
+    <form action="">
+
+        <% if(rooms.length < 1){ %>
+            <h2>No rooms created</h2>
+        <% }else{ %>
+            <% rooms.forEach((e)=>{ %>
+                <div>
+                    <div class="card-header">
+                        <%= e.name %>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                    <div class="card-footer">
+                        <a href="/room/<%= e.id %>">Join</a>
+                        <!-- <button href="/room?roomId=<%= e.id %>">Entrar </button> -->
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </form>
+
+</body>
+
+</html>

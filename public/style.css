@@ -1,12 +1,18 @@
 body {
     background: #333333;
+    /* background: green; */
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    align-items: center;
 }
 
 * {
+    padding: 0;
+    margin: 0;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
-
     box-sizing: border-box;
     user-select: none;
     transition: linear;
@@ -52,10 +58,10 @@ input[type="range"] {
 
 canvas > * {
     
-    /* cursor: none; */
+    cursor: none;
 }
 #circle{
-    /* cursor: none !important; */
+    cursor: none !important;
     border:1px solid white;
 
 }
@@ -87,9 +93,13 @@ canvas {
 }
 
 #container {
-    
+    /* background: green; */
     display: flex;
+    /* justify-content: center; */
+    /* height: 100vh; */
+    /* align-items: center; */
     justify-content: space-evenly;
+    gap: 2em;
     /* text-align: center; */
     /* background: green; */
     
@@ -97,7 +107,10 @@ canvas {
     /* position: relative; */
     
 }
-
+#canvas-container{
+    display: flex;
+    align-items: center;
+}
 .width {
     padding: 1em;
     background: steelblue;
@@ -133,7 +146,12 @@ canvas {
 }
 
 #chat-list {
-    height: 400px;
+    /* height: min(40px); */
+    /* height: 400px; */
+    max-height: 500px;
+    height: 80%;
+    
+    overflow-y: scroll;
     background: white;
 }
 
