@@ -15,7 +15,7 @@ Live drawing is a platform where you can start drawing on a canvas in real time 
 
 ## Demos
 
-### Simulating multiple real-time users on multiple sessions.
+### Simulating multiple real-time users by creating multiple sessions.
 ![demo1](https://user-images.githubusercontent.com/44708451/161919672-e23746f4-e7e4-4612-abd6-1b3629711bea.gif)
 
 
