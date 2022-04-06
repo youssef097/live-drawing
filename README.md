@@ -5,11 +5,11 @@ Live drawing is a platform where you can start drawing on a canvas in real time 
 
 
 ## Technologies
-All the client-side logic is made with vanilla Javascript, using the canvas API. 
-Real time communcation is possible thanks to Socket.io
-The server is running on NodeJS.
-The views are rendered with ejs.
-The fill color feature was made working with the pixel that data that canvas offer, applying the [Flood fill algorithm](https://en.wikipedia.org/wiki/Flood_fill).
+All the client-side logic is made with vanilla Javascript, using the canvas API. <br>
+Real time communcation is possible thanks to Socket.io <br>
+The server is running on NodeJS. <br>
+The views are rendered with ejs. <br>
+The fill color feature was made working with the pixel that data that canvas offer, applying the [Flood fill algorithm](https://en.wikipedia.org/wiki/Flood_fill). <br>
 
 ## Demos
 ### Simulating multiple real-time users on multiple sessions.
